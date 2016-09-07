@@ -2,7 +2,7 @@
 
  WazeApp is the final project done for EC504 Advanced Data Structures.
  
-The app can caculate k (integer) shortest paths between two arbitrary locations. The outputs are the distance of each path, and the paths representing in edge numbers.
+This program can caculate k (integer) shortest paths between two arbitrary locations. The outputs are the distance of each path, and the paths representing in edge numbers.
 
 *cal.cnode.txt* provides nodes (locations) with altitude, longitude and node number. *cal.cedge.txt* provides edges (roads) with starting node number, end node number and distance.
 
