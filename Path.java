@@ -1,4 +1,5 @@
-package DijkstraFib;
+package WazeApp;
+
 import java.util.*;
 
 public class Path {
@@ -25,3 +26,4 @@ public class Path {
 		return length;
 	}
 }
+

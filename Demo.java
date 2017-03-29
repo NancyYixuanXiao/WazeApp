@@ -1,4 +1,4 @@
-package DijkstraFib;
+package WazeApp;
 
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -7,7 +7,6 @@ public class Demo {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
 		WazeApp waze=new WazeApp ();
 		Scanner scan=new Scanner (System.in);
 		System.out.println("Please input the start node Id (only integer allowed): ");

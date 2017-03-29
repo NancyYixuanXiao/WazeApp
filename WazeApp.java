@@ -1,4 +1,5 @@
-package DijkstraFib;
+package WazeApp;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -9,8 +10,8 @@ public class WazeApp{
 
 		UndiGraph<Node> graph = new UndiGraph<Node> ();
 		
-		ArrayList<Node> nodeList=GetNodeEdge.getNodes();
-		ArrayList<Edge> edgeList=GetNodeEdge.getEdges();
+		ArrayList<Node> nodeList = GetNodeEdge.getNodes();
+		ArrayList<Edge> edgeList = GetNodeEdge.getEdges();
 		
 		for (int i=0;i<nodeList.size();i++){
 			graph.addNode(nodeList.get(i));
@@ -20,10 +21,10 @@ public class WazeApp{
 			graph.addEdge(edgeList.get(i));
 		}
 		
-		Node source=nodeList.get(n1);
-		Node sink=nodeList.get(n2);
+		Node source = nodeList.get(n1);
+		Node sink = nodeList.get(n2);
 		
-		Path [] path=kDijkstra.kShortestPaths(graph, source, sink, k);
+		Path [] path=KDijkstra.kShortestPaths(graph, source, sink, k);
 		
 		for (int i=0;i<k;i++){
 			

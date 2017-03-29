@@ -1,4 +1,4 @@
-package DijkstraFib;
+package WazeApp;
 
 public class Node {
 

@@ -1,4 +1,5 @@
-package DijkstraFib;
+package WazeApp;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class GetNodeEdge {
 	private final static ArrayList <Node> nodeList = new ArrayList<Node>();
 	public static ArrayList <Node> getNodes(){
 		
-	String nodeFile = "cal.cnode.txt";
+	String nodeFile = "src/files/cal.cnode.txt";
 		
 	try
     {
@@ -44,7 +45,6 @@ public class GetNodeEdge {
         System.err.println("Cannot access file.");
     }
 
-	       
     return nodeList;
 	}
 	
@@ -52,7 +52,7 @@ public class GetNodeEdge {
 
 		ArrayList<Edge> edgeList = new ArrayList<>();
  
-		String edgeFile = "cal.cedge.txt";
+		String edgeFile = "src/files/cal.cedge.txt";
 			
 		try
 	    {
@@ -87,7 +87,6 @@ public class GetNodeEdge {
 	        System.err.println("Cannot access file.");
 	    }
 
-		       
 	    return edgeList;
 		}
 }

@@ -1,4 +1,4 @@
-package DijkstraFib;
+package WazeApp;
 
 import java.util.*; // For ArrayList
 

@@ -1,4 +1,4 @@
-package DijkstraFib;
+package WazeApp;
 
 import java.util.*; 
 
@@ -10,7 +10,7 @@ public final class Dijkstra {
 
         Map<Node, FibonacciHeap.Entry<Node>> entries = new HashMap<Node, FibonacciHeap.Entry<Node>>();
 
-        ArrayList<Edge> edgelist=new ArrayList<Edge>();
+        ArrayList<Edge> edgelist = new ArrayList<Edge>();
 
         for (Node node: graph)
             entries.put(node, pq.enqueue(node, Double.POSITIVE_INFINITY));
@@ -20,7 +20,7 @@ public final class Dijkstra {
         while (!pq.isEmpty()) {
             
             FibonacciHeap.Entry<Node> curr = pq.dequeueMin();
-            if(curr.getPriority()==Double.POSITIVE_INFINITY){
+            if(curr.getPriority() == Double.POSITIVE_INFINITY) {
             	break;
             }
             else{
@@ -36,17 +36,17 @@ public final class Dijkstra {
             }      
         }
     	
-    	if (pq.isEmpty()){
-    		while ((sink.getPrevious()!=source)&&(sink.getPrevious()!=null)){
+    	if (pq.isEmpty()) {
+    		while ((sink.getPrevious() != source) && (sink.getPrevious() != null)){
     			edgelist.add(0, graph.getEdge(sink.getPrevious(), sink));
         		sink=sink.getPrevious();
         	}
-        	if (graph.getEdge(source, sink)!=null){
+        	if (graph.getEdge(source, sink) != null){
         		edgelist.add(0, graph.getEdge(source, sink));
         	}
     	}
     	
-        Path path=new Path (edgelist);
+        Path path = new Path (edgelist);
         return path;
     }
 
