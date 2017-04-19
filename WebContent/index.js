@@ -1,3 +1,14 @@
+// declare all global markers
+var startMarker; // marker for the start location
+var endMarker; // marker for the end location
+var markers = []; // array of all the markers
+var Coordinates = []; // array of coordinates to draw the polyline
+var flightPaths = []; // array of the google map polylines
+var markerCluster; // google map map cluster containsing all markers
+var markersShowed = true; // boolean value indicating whether the amrkers are visible on map
+var colors = ['#4a9be8', '#ff4f4f', '#d81c83', '#f24fd7', '#4c40e8', '#9140e8', 
+  	      '#40e8e8', '#db9004', '#c340e8', '#40e8bb'];// list of colors to draw polylines
+
 // send form data to WazeServlet
 function sendFormToServlet() {
 	Coordinates = [];
@@ -28,48 +39,44 @@ function sendFormToServlet() {
 		alert("Unable to connect to server");
 	} 
 }
-   var startMarker;
-	   var endMarker;
-   function markerAnimate(elem) {
-		var elem_id = elem.id;
-	   	var marker_id = parseInt(document.getElementById(elem_id).value);
-	    map.setZoom(9);
-	    map.panTo(markers[marker_id].getPosition());
-	    var image = {
-            url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Flag_icon_red_4.svg/32px-Flag_icon_red_4.svg.png',
-    size: new google.maps.Size(35, 36),
-    origin: new google.maps.Point(0, 0),
-    anchor: new google.maps.Point(0, 32)
-   };
-	if (elem_id == "start") {
-	if (typeof(startMarker) == 'object') {
-		startMarker.setMap(null);
-	}
-	startMarker = new google.maps.Marker({
-	    position: markers[marker_id].getPosition(),
-	    map: map,
-	    label: 'S',
-	        icon: image
-	      });
-	} else {
-		if (typeof(endMarker) == 'object') {
-		endMarker.setMap(null);
-	}
-	endMarker = new google.maps.Marker({
-	    position: markers[marker_id].getPosition(),
-	    map: map,
-	    label: 'E',
-	                icon: image
-	              });
-	        }
-	   }
-var markers = [];
-var Coordinates = [];
-var flightPaths = [];
-var markerCluster;
-var markersShowed = true;
-var colors = ['#4a9be8', '#ff4f4f', '#d81c83', '#f24fd7', '#4c40e8', '#9140e8', 
-  	          '#40e8e8', '#db9004', '#c340e8', '#40e8bb'];
+
+// put a marker with icon on the start or end location if the user change the content in the 
+// corresponding text box
+function markerAnimate(elem) {
+	var elem_id = elem.id;
+   	var marker_id = parseInt(document.getElementById(elem_id).value);
+    map.setZoom(9);
+    map.panTo(markers[marker_id].getPosition());
+    var image = {
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Flag_icon_red_4.svg/32px-Flag_icon_red_4.svg.png',
+		size: new google.maps.Size(35, 36),
+		origin: new google.maps.Point(0, 0),
+		anchor: new google.maps.Point(0, 32)
+		};
+		if (elem_id == "start") {
+		if (typeof(startMarker) == 'object') {
+			startMarker.setMap(null);
+		}
+		startMarker = new google.maps.Marker({
+		    position: markers[marker_id].getPosition(),
+		    map: map,
+		    label: 'S',
+		        icon: image
+		      });
+		} else {
+			if (typeof(endMarker) == 'object') {
+			endMarker.setMap(null);
+		}
+		endMarker = new google.maps.Marker({
+		    position: markers[marker_id].getPosition(),
+		    map: map,
+		    label: 'E',
+            icon: image
+          });
+        }
+   }
+
+// Show or hide the markers on map if the user click the 'markers' button
 function showOrHideMarkers() {
 	if (markersShowed) {
 		markerCluster.setMap(null);
@@ -103,6 +110,7 @@ function findAdjEdges(node_id) {
 	} 
   	addLine();
 }
+
 // giving a list of edge id, find the start and end nodes of these edges
 function findNodePairs(val) {
 	var edges = val.trim().split(" "); 
@@ -148,11 +156,15 @@ function findLatLng(nodePair) {
 		}
 	}
 }
+
+// when need to draw a new line, remove the line currently on map
 function removeLine() {
 	Array.prototype.forEach.call(flightPaths, function(flightPath) {
 		flightPath.setMap(null);
 	});
 }
+
+// draw lines in flightPaths on map
 function addLine() {
 	for (var i = 0; i < Coordinates.length; i++) {
 		var flightPath = new google.maps.Polyline({
@@ -184,4 +196,4 @@ function addLine() {
 			}
 		    });
 		});
-}
+ }
