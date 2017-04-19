@@ -1,4 +1,9 @@
-package WazeApp;
+package waze;
+
+/*
+ * Define a class of Node. Each node has node Id, latitude and longitude.
+ * It is used to construct a graph.
+ */
 
 public class Node {
 
@@ -7,12 +12,14 @@ public class Node {
 	private double lng;
 	private Node previous;
 	
+	//Constructor
 	public Node(int nodeId, double lat, double lng){
 		this.nodeId=nodeId;
 		this.lat=lat;
 		this.lng=lng;
 	}
 	
+	//getters and setters
 	public int getNodeId() {
 		return nodeId;
 	}
@@ -36,7 +43,8 @@ public class Node {
 	public void setLng(double lng) {
 		this.lng = lng;
 	}
-
+	
+	//set a pointer points to the previous node of current node in path
 	public Node getPrevious() {
 		return previous;
 	}
@@ -45,5 +53,5 @@ public class Node {
 		this.previous = previous;
 	}
 
-
 }
+

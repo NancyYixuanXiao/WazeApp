@@ -1,4 +1,9 @@
-package WazeApp;
+package waze;
+
+/*
+ * Define a class of Edge. Each edge has edge Id, a pair of nodes and distance.
+ * It is used to construct an undirected graph.
+ */
 
 public class Edge {
 
@@ -11,12 +16,6 @@ public class Edge {
 		this.ends=ends;
 		this.distance=distance;
 	}
-//	
-//	public Edge(Node one, Node two, double distance){
-//		NodePair ends=new NodePair(one,two);
-//		this.ends=ends;
-//		this.distance=distance;
-//	}
 	
 	public int getEdgeId() {
 		return edgeId;
@@ -38,3 +37,4 @@ public class Edge {
 	}
 	
 }
+

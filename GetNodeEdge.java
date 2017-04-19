@@ -1,92 +1,127 @@
-package WazeApp;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StreamTokenizer;
+package waze;
+/*
+ * Define a class to read txt file and return ArrayLists of Nodes and Edges
+ */
 import java.util.*;
+import java.sql.*;
 
 public class GetNodeEdge {
+	
+	// JDBC driver name and database URL
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	static final String DB_URL = "jdbc:mysql://localhost/waze?useSSL=false";
 
-	private final static ArrayList <Node> nodeList = new ArrayList<Node>();
-	public static ArrayList <Node> getNodes(){
-		
-	String nodeFile = "src/files/cal.cnode.txt";
-		
-	try
-    {
-        InputStream is = new FileInputStream(nodeFile);
-        Reader r = new BufferedReader(new InputStreamReader(is));
-        StreamTokenizer st = new StreamTokenizer(r);
-        
-      for (int i = 0; i < 21048; i++)
-        {
-            st.nextToken();
-            int nodeid=(int)st.nval;
-            st.nextToken();
-            double lat=st.nval;
-            st.nextToken();
-            double lng=st.nval;
-            Node node = new Node(nodeid,lng,lat);
-            nodeList.add(node);
-        }
+	//  Database credentials
+	static final String USER = "root";
+    static final String PASS = "123456";
+   
+	private static ArrayList <Node> nodeList;
+	
+	public static ArrayList<Node> getNodes(){
+		nodeList = new ArrayList<Node>();
+	    Connection conn = null;
+	    Statement stmt = null;
+	    try{
+	      //STEP 2: Register JDBC driver
+	      Class.forName("com.mysql.jdbc.Driver");
 
-    }
-    catch (FileNotFoundException e1)
-    {
-        System.err.println("File not found.");
-    }
-    catch (IOException e)
-    {
-        System.err.println("Cannot access file.");
-    }
+	      //STEP 3: Open a connection
+	      conn = DriverManager.getConnection(DB_URL,USER,PASS);
 
-    return nodeList;
+	      //STEP 4: Execute a query
+	      stmt = conn.createStatement();
+	      String sql;
+	      sql = "SELECT node_id, latitude, longitude FROM nodes";
+	      ResultSet rs = stmt.executeQuery(sql);
+
+	      //STEP 5: Extract data from result set
+	      while(rs.next()){
+	         //Retrieve by column name
+	         int id  = rs.getInt("node_id");
+	         double latitude = rs.getDouble("latitude");
+	         double longitude = rs.getDouble("longitude");
+	         nodeList.add(new Node(id, latitude, longitude));
+	      }
+	      //STEP 6: Clean-up environment
+	      rs.close();
+	      stmt.close();
+	      conn.close();
+	   }catch(SQLException se){
+	      //Handle errors for JDBC
+	      se.printStackTrace();
+	   }catch(Exception e){
+	      //Handle errors for Class.forName
+	      e.printStackTrace();
+	   }finally{
+	      //finally block used to close resources
+	      try{
+	         if(stmt!=null)
+	            stmt.close();
+	      }catch(SQLException se2){
+	      }// nothing we can do
+	      try{
+	         if(conn!=null)
+	            conn.close();
+	      }catch(SQLException se){
+	         se.printStackTrace();
+	      }//end finally try
+	   }//end try
+	   return nodeList;
 	}
 	
 	public static ArrayList<Edge> getEdges(){
 
 		ArrayList<Edge> edgeList = new ArrayList<>();
- 
-		String edgeFile = "src/files/cal.cedge.txt";
-			
-		try
-	    {
-	        InputStream is = new FileInputStream(edgeFile);
-	        Reader r = new BufferedReader(new InputStreamReader(is));
-	        StreamTokenizer st = new StreamTokenizer(r);
-	        
-	      for (int i = 0; i < 21693; i++)
-	        {
-	            st.nextToken();
-	            int edgeid=(int)st.nval;
-	            st.nextToken();
-	            int nod1=(int)st.nval;
-	            st.nextToken();
-	            int nod2=(int)st.nval;
-	            Node node1=nodeList.get(nod1);
-	            Node node2=nodeList.get(nod2);
-	            NodePair ends=new NodePair (node1,node2);
-	            st.nextToken();
-	            double distance=st.nval;
-	            Edge edge=new Edge(edgeid,ends,distance);
-	            edgeList.add(edge);
-	        }
+		Connection conn = null;
+	    Statement stmt = null;
+	    try{
+	      //STEP 2: Register JDBC driver
+	      Class.forName("com.mysql.jdbc.Driver");
 
-	    }
-	    catch (FileNotFoundException e1)
-	    {
-	        System.err.println("File not found.");
-	    }
-	    catch (IOException e)
-	    {
-	        System.err.println("Cannot access file.");
-	    }
+	      //STEP 3: Open a connection
+	      conn = DriverManager.getConnection(DB_URL,USER,PASS);
 
-	    return edgeList;
-		}
+	      //STEP 4: Execute a query
+	      stmt = conn.createStatement();
+	      String sql;
+	      sql = "SELECT edge_id, start_id, end_id, distance FROM edges";
+	      ResultSet rs = stmt.executeQuery(sql);
+
+	      //STEP 5: Extract data from result set
+	      while(rs.next()){
+	         //Retrieve by column name
+	         int id  = rs.getInt("edge_id");
+	         int start_id = rs.getInt("start_id");
+	         int end_id = rs.getInt("end_id");
+	         double distance = rs.getDouble("distance");
+	         NodePair curr = new NodePair(nodeList.get(start_id), nodeList.get(end_id));
+	         edgeList.add(new Edge(id, curr, distance));
+	      }
+	      //STEP 6: Clean-up environment
+	      rs.close();
+	      stmt.close();
+	      conn.close();
+	   }catch(SQLException se){
+	      //Handle errors for JDBC
+	      se.printStackTrace();
+	   }catch(Exception e){
+	      //Handle errors for Class.forName
+	      e.printStackTrace();
+	   }finally{
+	      //finally block used to close resources
+	      try{
+	         if(stmt!=null)
+	            stmt.close();
+	      }catch(SQLException se2){
+	      }// nothing we can do
+	      try{
+	         if(conn!=null)
+	            conn.close();
+	      }catch(SQLException se){
+	         se.printStackTrace();
+	      }//end finally try
+	   }//end try
+	   return edgeList;
+	}
 }
+

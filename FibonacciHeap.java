@@ -1,15 +1,16 @@
-package WazeApp;
+package waze;
 
-import java.util.*; // For ArrayList
-
-/**
- * A class representing a Fibonacci heap.
- *
- * @param T The type of elements to store in the heap.
- * @author Keith Schwarz (htiek@cs.stanford.edu)
+/*
+ * Define a class of Fibonacci heap
  */
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 public final class FibonacciHeap<T> {
     
+	//define Entry class
     public static final class Entry<T> {
         private int     mDegree = 0;       // Number of children
         private boolean mIsMarked = false; // Whether this node is marked
@@ -46,7 +47,7 @@ public final class FibonacciHeap<T> {
     private Entry<T> mMin = null;
 
     private int mSize = 0;
-
+    
     public Entry<T> enqueue(T value, double priority) {
         checkPriority(priority);
 

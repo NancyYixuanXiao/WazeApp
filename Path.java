@@ -1,12 +1,15 @@
-package WazeApp;
-
-import java.util.*;
+package waze;
+/*
+ * Define a class Path, which is a path in graph consisting of an ArrayList of edges.
+ */
+import java.util.ArrayList;
 
 public class Path {
 
 	private ArrayList<Edge> edgeList;
 	private double length;
 	
+	//Constructor
 	public Path(ArrayList<Edge> edgeList){
 		this.edgeList=edgeList;
 	}
