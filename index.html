@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WazeApp</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 38px;
+        left: 0px;
+        z-index: 1;
+        padding: 5px;
+        text-align: left;
+        line-height: 25px;
+      }
+      #popup {
+        position:absolute;
+        width: 100px; 
+        top: 10px;
+        left: 110px; 
+        z-index: 1;
+        font-size: 12px; 
+        background-color: black; 
+        color: #fff; 
+        text-align: center;
+        border-radius: 2px; 
+        padding: 5px 5px 5px 5px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>   
+  </head>
+  <body>
+  <iframe name="votar" style="display:none;"></iframe>
+  <div id="popup" style="display: none;">Paths info here</div>
+  <div id="floating-panel">
+  	<form onsubmit="sendFormToServlet()" target="votar">
+  		<input id="start" style="width:90px; height:20px; margin:5px" type="number" name="startNodeId" placeholder="Start Node Id" min="0" max="21047" required onchange="markerAnimate(this)">
+  		<br/>
+  		<input id="end" style="width:90px; height:20px; margin-left:5px" type="number" name="endNodeId" placeholder="End Node Id" min="0" max="21047" required onchange="markerAnimate(this)">
+  		<br/>
+  		<input id="k" style="width:90px; height:20px; margin:5px" type="number" name="numPaths" placeholder="Num of paths" min="1" max="10" required>
+  		<br/>
+  		<button id="markers" type="button" style="background-color:white; border: none; box-shadow:1px 1px 1px 1px lightgrey; width:48px; height:25px; margin-left:5px; cursor: pointer" onclick="showOrHideMarkers()">Markers</button>
+  		<button id="submit" style="background-color:white; width:45px; height:25px; margin-left:-3px; border: none; box-shadow:1px 1px 1px 1px lightgrey; cursor: pointer" type="submit" onclick="myFunc()">Submit</button>
+   </form>
+
+  </div>
+  <div id="map"></div>
+  <script>
+	function initMap() {
+		var myCenter = {lat: 37.770061, lng: -122.159103};
+    	map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 6,
+        center: myCenter
+     });
+        
+	  	var infoWindow = new google.maps.InfoWindow;
+	
+	  	var xhttp = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') :
+	                  new XMLHttpRequest;
+	  	xhttp.onreadystatechange = function() {
+	  	    if (this.readyState == 4) {
+	  	    	parseMarkers(this);
+	  	    }
+	  	};
+	  	xhttp.open("GET", "sample.xml", true);
+	  	xhttp.send();
+	  	function parseMarkers(xml) {
+	  		var xmlDoc = xml.responseXML;
+	  		var rawMarkers = xmlDoc.getElementsByTagName("marker");	  		
+	  		Array.prototype.forEach.call(rawMarkers, function(markerElem) {
+	            var id = markerElem.getAttribute('id');
+	            var point = new google.maps.LatLng(
+	                parseFloat(markerElem.getAttribute('lat')),
+	                parseFloat(markerElem.getAttribute('lng')));
+	
+	            var marker = new google.maps.Marker({
+	              map: map,
+	              position: point,
+	            });
+		  	  	var contentString = "<b>Node ID:</b> " + id + " <p><b>Latitude:</b> " + 
+		  	        markerElem.getAttribute('lat') + " </p><b>Longitude:</b> " 
+					+ markerElem.getAttribute('lng');
+	            marker.addListener('click', function() {
+	              infoWindow.setContent(contentString);
+	              infoWindow.open(map, marker);
+	              findAdjEdges(id);
+	            });
+	            markers.push(marker);
+	          });
+	        alert(markers.length);
+	     // Add a marker clusterer to manage the markers.
+	     markerCluster = new MarkerClusterer(map, markers,
+	         {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+	  	}
+	}
+	 
+   </script>
+   <script src="index.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+   <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+   </script>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAS162ZPKo4LV16_iQhxFguZqEoSKkMgEA&callback=initMap"
+   async defer></script>
+  </body>
+</html>
