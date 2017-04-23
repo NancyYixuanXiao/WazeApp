@@ -20,9 +20,6 @@ public class WazeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		response.setContentType("text/html");
-		System.out.println("startid = " + request.getParameter("startNodeId"));
-		System.out.println("endid = " + request.getParameter("endNodeId"));
-		System.out.println("k = " + request.getParameter("numPaths"));
 		int start = Integer.parseInt(request.getParameter("startNodeId"));
 		int end = Integer.parseInt(request.getParameter("endNodeId"));
 		int k = Integer.parseInt(request.getParameter("numPaths"));
@@ -32,7 +29,7 @@ public class WazeServlet extends HttpServlet {
 		System.out.println("k = " + k);
 		PrintWriter writer = response.getWriter();
 		try {
-			String res = WazeApp.demo(start, end, k);
+			String res = WazeApp.waze(start, end, k);
 			writer.println(res);
 		} catch (Exception e) {
 			e.printStackTrace();
