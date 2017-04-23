@@ -39,14 +39,4 @@ public class UndirectedGraph {
 		}
 		return oriLen;
 	}
-	
-	public double getEdgeWeight(Node node1, Node node2) {
-		int i = 0;
-		for (i = 0; i < this.graph.get(node1).size(); i++) {
-			if (this.graph.get(node1).get(i).getNode() == node2) {
-				break;
-			}
-		}
-		return this.graph.get(node1).get(i).getDistance();
-	}
 }
