@@ -4,51 +4,21 @@ var endMarker; // marker for the end location
 var markers = []; // array of all the markers
 var Coordinates = []; // array of coordinates to draw the polyline
 var flightPaths = []; // array of the google map polylines
+var distances = [];
 var markerCluster; // google map map cluster containsing all markers
 var markersShowed = true; // boolean value indicating whether the amrkers are visible on map
 var colors = ['#4a9be8', '#ff4f4f', '#d81c83', '#f24fd7', '#4c40e8', '#9140e8', 
-  	      '#40e8e8', '#db9004', '#c340e8', '#40e8bb'];// list of colors to draw polylines
+  	          '#40e8e8', '#db9004', '#c340e8', '#40e8bb'];// list of colors to draw polylines
 
-// send form data to WazeServlet
-function sendFormToServlet() {
-	Coordinates = [];
-	removeLine();
-	flightPaths = [];
-	var url = "WazeServlet?startNodeId=" + document.getElementById("start").value
-	           + "&endNodeId=" + document.getElementById("end").value
-	           + "&numPaths=" + document.getElementById("k").value;
-	var requestEdge = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') :
-        new XMLHttpRequest;
-	try{  
-		requestEdge.onreadystatechange = function() {
-			if(requestEdge.readyState == 4) { 
-				var pathsString = requestEdge.responseText;
-				var paths = pathsString.trim().split(",");
-				for (var i = 0; i < paths.length; i++) {
-					Coordinates.push([]);
-					findNodePairs(paths[i]);	
-					alert("Path" + (i + 1) + " is ready.");
-				}
-			}
-		};  
-		requestEdge.open("GET", url, false);  
-		requestEdge.send();
-		addLine();
-	}
-	catch(e) {
-		alert("Unable to connect to server");
-	} 
-}
-
-// put a marker with icon on the start or end location if the user change the content in the 
-// corresponding text box
+//put a marker with icon on the start or end location if the user change the content in the 
+//corresponding text box
 function markerAnimate(elem) {
 	var elem_id = elem.id;
-   	var marker_id = parseInt(document.getElementById(elem_id).value);
-    map.setZoom(9);
-    map.panTo(markers[marker_id].getPosition());
-    var image = {
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Flag_icon_red_4.svg/32px-Flag_icon_red_4.svg.png',
+	var marker_id = parseInt(document.getElementById(elem_id).value);
+ map.setZoom(9);
+ map.panTo(markers[marker_id].getPosition());
+ var image = {
+     url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Flag_icon_red_4.svg/32px-Flag_icon_red_4.svg.png',
 		size: new google.maps.Size(35, 36),
 		origin: new google.maps.Point(0, 0),
 		anchor: new google.maps.Point(0, 32)
@@ -71,12 +41,12 @@ function markerAnimate(elem) {
 		    position: markers[marker_id].getPosition(),
 		    map: map,
 		    label: 'E',
-            icon: image
-          });
-        }
-   }
+         icon: image
+       });
+     }
+}
 
-// Show or hide the markers on map if the user click the 'markers' button
+//Show or hide the markers on map if the user click the 'markers' button
 function showOrHideMarkers() {
 	if (markersShowed) {
 		markerCluster.setMap(null);
@@ -86,8 +56,44 @@ function showOrHideMarkers() {
 		markersShowed = true;
 	}
 }
-// given the node_id, find adjacency edges by search in edges table in database
-function findAdjEdges(node_id) {
+
+// send form data to WazeServlet
+function sendFormToServlet() {
+	Coordinates = [];
+	removeLine();
+	flightPaths = [];
+	var url = "WazeServlet?startNodeId=" + document.getElementById("start").value
+	           + "&endNodeId=" + document.getElementById("end").value
+	           + "&numPaths=" + document.getElementById("k").value;
+	var wazeRequest = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') :
+        new XMLHttpRequest;
+	try{  
+		wazeRequest.onreadystatechange = function() {
+			if(wazeRequest.readyState == 4) { 
+				var pathsString = wazeRequest.responseText;
+				var paths = pathsString.trim().split(",");
+				for (var i = 0; i < paths.length; i++) {
+					if (paths[i] == null || paths[i].length == 0) {
+						continue;
+					}
+					var paths1 = paths[i].split("/");
+					Coordinates.push([]);
+					findLatLng(paths1[1]);	
+					distances.push(parseFloat(paths1[0]));
+				}
+			}
+		};  
+		wazeRequest.open("GET", url, false);  
+		wazeRequest.send();
+		addLine();
+	}
+	catch(e) {
+		alert("Unable to connect to server");
+	} 
+}
+
+// given the node_id, return a list of adjacent nodes by search in edges table in database
+function findAdjNodes(node_id) {
 	Coordinates = [];
 	removeLine();
 	flightPaths = [];
@@ -98,8 +104,9 @@ function findAdjEdges(node_id) {
 	try{  
 		requestEdge.onreadystatechange = function() {
 			if(requestEdge.readyState == 4) { 
-				var val = requestEdge.responseText;
-				findNodePairs(val);
+				var nodes = requestEdge.responseText;
+				alert(nodes);
+				findLatLng(nodes);
 			}
 		};  
 		requestEdge.open("GET", url, false);  
@@ -111,33 +118,14 @@ function findAdjEdges(node_id) {
   	addLine();
 }
 
-// giving a list of edge id, find the start and end nodes of these edges
-function findNodePairs(val) {
-	var edges = val.trim().split(" "); 
-	for (var i = 0; i < edges.length; i++) {
-		var url = "searchNodes.jsp?edge_id=" + edges[i];
-		var requestNode = window.ActiveXObject ? new ActiveXObject('Microsoft.XMLHTTP') :
-                  new XMLHttpRequest;
-		try{  
-			requestNode.onreadystatechange = function() {
-				if (requestNode.readyState == 4) {
-					var nodePair = requestNode.responseText;
-					findLatLng(nodePair);
-				}
-			};
-			requestNode.open("GET", url, false);  
-			requestNode.send();
+//given a list nodes, add their latitudes and longitudes to Coordinates by search the nodes table
+function findLatLng(nodes) {
+	var nodeslist = nodes.trim().split(" "); 
+	for (var i = 0; i < nodeslist.length; i++) {
+		if (nodeslist[i] == null || nodeslist[i].length == 0) {
+			continue;
 		}
-		catch(e) {
-			alert("Unable to connect to server");
-		}
-	}
-}
-//given a pair of nodes, find the latitude and longitude by search the nodes table
-function findLatLng(nodePair) {
-	var nodes = nodePair.trim().split(" "); 
-	for (var i = 0; i < nodes.length; i++) {
-		var url = "searchLatLng.jsp?node_id=" + nodes[i];
+		var url = "searchLatLng.jsp?node_id=" + nodeslist[i];
 		var requestGeo = window.ActiveXObject ? 
 				new ActiveXObject('Microsoft.XMLHTTP') : new XMLHttpRequest;
 		try{  
@@ -157,20 +145,13 @@ function findLatLng(nodePair) {
 	}
 }
 
-// when need to draw a new line, remove the line currently on map
-function removeLine() {
-	Array.prototype.forEach.call(flightPaths, function(flightPath) {
-		flightPath.setMap(null);
-	});
-}
-
 // draw lines in flightPaths on map
 function addLine() {
 	for (var i = 0; i < Coordinates.length; i++) {
 		var flightPath = new google.maps.Polyline({
 	    	path: Coordinates[i],
 	        strokeColor: colors[i],
-	        strokeOpacity: 0.8,
+	        strokeOpacity: 0.6,
 	        strokeWeight: 5,
 	        draggable: true
 	  	    });
@@ -179,7 +160,7 @@ function addLine() {
 	}
 	Array.prototype.forEach.call(flightPaths, function(flightPath, index) {
 		google.maps.event.addListener(flightPath, 'mouseover', function(e) {
-			document.getElementById('popup').innerHTML = "No." + (index + 1) + " shortest path.";
+			document.getElementById('popup').innerHTML = "No." + (index + 1) + " shortest path \n length = " + distances[index].toFixed(4);
 			document.getElementById('popup').style.display = 'block';
 			for (var i = 0; i < flightPaths.length; i++) {
 				if (i == index) {
@@ -196,4 +177,11 @@ function addLine() {
 			}
 		    });
 		});
- }
+}
+
+//when need to draw a new line, remove the line currently on map
+function removeLine() {
+	Array.prototype.forEach.call(flightPaths, function(flightPath) {
+		flightPath.setMap(null);
+	});
+}
