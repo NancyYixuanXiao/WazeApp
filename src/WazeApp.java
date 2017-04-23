@@ -1,48 +1,32 @@
 package waze;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class WazeApp {
-	public static String demo(int node1, int node2, int k) throws FileNotFoundException {
+	public static String waze(int node1, int node2, int k) {
+		
 		if (node1 == node2) {
 			return "";
 		}
-		UndiGraph<Node> graph = new UndiGraph<Node> ();
 		
-		ArrayList<Node> nodeList = GetNodeEdge.getNodes();
-		ArrayList<Edge> edgeList = GetNodeEdge.getEdges();
-		
-		for (int i=0; i<nodeList.size(); i++){
-			graph.addNode(nodeList.get(i));
-		}
-		
-		for (int i=0; i<edgeList.size(); i++){
-			graph.addEdge(edgeList.get(i));
-		}
+		Map<Integer, Node> nodes = GetNodesEdges.getNodes();
+		Map<Integer, Edge> edges = GetNodesEdges.getEdges();
+		UndirectedGraph g = new UndirectedGraph(new ArrayList<Edge>(edges.values()));
 
-		Node source = nodeList.get(node1);
-		Node sink = nodeList.get(node2);
-		
-		String finalResult = null;
-		StringBuilder edgeResult = new StringBuilder();
-		List<Path> path = kDijkstra.kShortestPaths(graph, source, sink, k);
-		for (int i=0; i<path.size(); i++){
-			System.out.println("The "+(i+1)+"th shortest path: "+path.get(i).getLength());	
-			for (int j=0; j<path.get(i).getEdgeList().size(); j++){
-			    edgeResult.append(path.get(i).getEdgeList().get(j).getEdgeId());
-			    if (j < path.get(i).getEdgeList().size() - 1) {
-			    	edgeResult.append(" ");
-			    }
-			}
-			if (i < path.size() - 1) {
-				edgeResult.append(",");
-			}
-			System.out.println();
+		String res = "";
+		Node source = nodes.get(node1);
+		Node sink = nodes.get(node2);
+		List<Path> paths = Yen.yen(g, source, sink, k);
+		System.out.println("Found " + paths.size() + " paths");
+		for (int i = 0; i < paths.size(); i++){
+			res += String.valueOf(paths.get(i).getDistance(sink));
+			res += "/";
+			res += paths.get(i).toString();
+			res += ",";
 		}
-		finalResult = edgeResult.toString();
-		return finalResult;
+		return res;
 	}
 }
 
