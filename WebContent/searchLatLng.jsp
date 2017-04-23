@@ -13,7 +13,6 @@ if (s != null && !s.trim().equals(""))
 		ps.setInt(1, id);  
 		ResultSet rs = ps.executeQuery();  
 		while(rs.next()) {  
-			System.out.println(rs.getDouble("latitude") + " " + rs.getDouble("longitude"));
 			out.println(rs.getDouble("latitude") + " " + rs.getDouble("longitude"));
 		}  
 		con.close();  
