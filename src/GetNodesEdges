@@ -1,0 +1,129 @@
+package waze;
+
+/*
+ * Define a class to read txt file and return ArrayLists of Nodes and Edges
+ */
+import java.util.*;
+import java.sql.*;
+
+public class GetNodesEdges {
+	
+	// JDBC driver name and database URL
+	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+	static final String DB_URL = "jdbc:mysql://localhost/waze?useSSL=false";
+
+	//  Database credentials
+	static final String USER = "root";
+    static final String PASS = "123456";
+	
+    static Map<Integer, Node> nodes = null;
+    
+	public static Map<Integer, Node> getNodes() {
+		nodes = new HashMap<> ();
+	    Connection conn = null;
+	    Statement stmt = null;
+	    try {
+	      //STEP 2: Register JDBC driver
+	      Class.forName("com.mysql.jdbc.Driver");
+
+	      //STEP 3: Open a connection
+	      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+	      //STEP 4: Execute a query
+	      stmt = conn.createStatement();
+	      String sql;
+	      sql = "SELECT node_id FROM nodes";
+	      ResultSet rs = stmt.executeQuery(sql);
+
+	      //STEP 5: Extract data from result set
+	      while (rs.next()) {
+	         //Retrieve by column name
+	         int id  = rs.getInt("node_id");
+	         nodes.put(id, new Node(id));
+	      }
+	      //STEP 6: Clean-up environment
+	      rs.close();
+	      stmt.close();
+	      conn.close();
+	   } catch (SQLException se) {
+	      //Handle errors for JDBC
+	      se.printStackTrace();
+	   } catch (Exception e) {
+	      //Handle errors for Class.forName
+	      e.printStackTrace();
+	   } finally {
+	      //finally block used to close resources
+	      try{
+	         if (stmt!=null) {
+	        	 stmt.close(); 
+	         }
+	      } catch(SQLException se2) {
+	      }// nothing we can do
+	      try {
+	         if (conn!=null) {
+	        	 conn.close();
+	         }
+	      } catch (SQLException se) {
+	         se.printStackTrace();
+	      }//end finally try
+	   }//end try
+	   return nodes;
+	}
+	
+	public static Map<Integer, Edge> getEdges(){
+
+		Map<Integer, Edge> edges = new HashMap<> ();
+		Connection conn = null;
+	    Statement stmt = null;
+	    try{
+	      //STEP 2: Register JDBC driver
+	      Class.forName("com.mysql.jdbc.Driver");
+
+	      //STEP 3: Open a connection
+	      conn = DriverManager.getConnection(DB_URL,USER,PASS);
+
+	      //STEP 4: Execute a query
+	      stmt = conn.createStatement();
+	      String sql;
+	      sql = "SELECT edge_id, start_id, end_id, distance FROM edges";
+	      ResultSet rs = stmt.executeQuery(sql);
+
+	      //STEP 5: Extract data from result set
+	      while (rs.next()) {
+	         //Retrieve by column name
+	         int id  = rs.getInt("edge_id");
+	         int start_id = rs.getInt("start_id");
+	         int end_id = rs.getInt("end_id");
+	         double distance = rs.getDouble("distance");
+	         edges.put(id, new Edge(id, nodes.get(start_id), nodes.get(end_id), distance));
+	      }
+	      //STEP 6: Clean-up environment
+	      rs.close();
+	      stmt.close();
+	      conn.close();
+	   } catch (SQLException se) {
+	      //Handle errors for JDBC
+	      se.printStackTrace();
+	   } catch (Exception e) {
+	      //Handle errors for Class.forName
+	      e.printStackTrace();
+	   } finally {
+	      //finally block used to close resources
+	      try {
+	         if (stmt!=null) {
+	        	 stmt.close();
+	         }
+	      } catch (SQLException se2) {
+	      }// nothing we can do
+	      try {
+	         if (conn!=null) {
+	        	 conn.close();
+	         }
+	      } catch (SQLException se) {
+	         se.printStackTrace();
+	      }//end finally try
+	   }//end try
+	   return edges;
+	}
+}
+
