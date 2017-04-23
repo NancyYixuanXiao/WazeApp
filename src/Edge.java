@@ -1,40 +1,29 @@
 package waze;
 
-/*
- * Define a class of Edge. Each edge has edge Id, a pair of nodes and distance.
- * It is used to construct an undirected graph.
- */
-
+// define the Edge class
 public class Edge {
-
 	private int edgeId;
-	private NodePair ends;
+	private Node start;
+	private Node end;
 	private double distance;
-		
-	public Edge(int edgeId, NodePair ends, double distance){
-		this.edgeId=edgeId;
-		this.ends=ends;
-		this.distance=distance;
-	}
 	
-	public int getEdgeId() {
-		return edgeId;
-	}
-	public void setEdgeId(int edgeId) {
+	public Edge(int edgeId, Node start, Node end, double distance) {
 		this.edgeId = edgeId;
-	}
-	public NodePair getEnds(){
-		return ends;
-	}
-	public void setEnds(NodePair ends){
-		this.ends=ends;
-	}
-	public double getDistance() {
-		return distance;
-	}
-	public void setDistance(double distance) {
+		this.start = start;
+		this.end = end;
 		this.distance = distance;
 	}
 	
+	public int getEdgeId() {
+		return this.edgeId;
+	}
+	
+	public Node[] getNodes() {
+		return new Node[] {start, end};
+	}
+	
+	public double getDistance() {
+		return this.distance;
+	}
+	
 }
-
