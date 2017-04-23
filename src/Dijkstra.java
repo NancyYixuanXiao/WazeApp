@@ -25,7 +25,6 @@ public class Dijkstra {
 				break;
 			}
 			// relaxation for each node the curr is connected to
-			boolean relaxed = false;
 			for (Endpoint end : g.graph.get(curr.getValue())) {
 				double cost = curr.getPriority() + end.getDistance();
 				FibonacciHeap.Entry<Node> dest = entries.get(end.getNode());
