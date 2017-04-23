@@ -1,6 +1,7 @@
 package waze;
 
 /*
+ * Implementation from Stanford - Keith Schwarz
  * Define a class of Fibonacci heap
  */
 
