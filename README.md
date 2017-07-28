@@ -23,9 +23,18 @@ Demo video link: https://drive.google.com/open?id=0B80WQs3npy5tTDAxck9sOFM5NDA.
 
 Googlemap api, java, jsp, java servlet, jQuery, html, css, javascript, Mysql, Tomcat
 
- 
-*cal.cnode.txt* provides nodes (locations) with altitude, longitude and node number. *cal.cedge.txt* provides edges (roads) with starting node number, end node number and distance. I load these two files to Mysql database as nodes and edges tables, and query database to get data of nodes and edges.
 
-In the src folder, the Demo.java runs the program locally without frontend. If the tomcat server and Mysql are setted up, then the index.html is the main page of this project.
+## How to run it
+
+Set up nodes table and edges table in Mysql database. In the src folder, the Demo.java runs the program locally without frontend. If tomcat server is setted up, then run index.html which is the main page of this project.
+
+
+## Source files
+
+*cal.cnode.txt* provides nodes (locations) with altitude, longitude and node number. *cal.cedge.txt* provides edges (roads) with starting node number, end node number and distance. 
+Feifei Li, Dihan Cheng, Marios
+Hadjieleftheriou, George Kollios and Shang-Hua Teng, “On Trip Planning Queries
+in Spatial Databases”, In Proceedings of the 9th International Symposium on
+Spatial and Temporal Databases (SSTD ’05), 2005.
 
 
