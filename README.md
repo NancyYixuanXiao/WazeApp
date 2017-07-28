@@ -19,7 +19,7 @@ Demo video link: https://drive.google.com/open?id=0B80WQs3npy5tTDAxck9sOFM5NDA.
 4. Reference the implementation of fibonacci heap from Stanford - Keith Schwarz. Time and space complexity to compute the shortest path is VlogV + E (V: number of nodes, E: number of edges).
 
 
-## Technologies userd
+## Technologies used
 
 Googlemap api, java, jsp, java servlet, jQuery, html, css, javascript, Mysql, Tomcat
 
